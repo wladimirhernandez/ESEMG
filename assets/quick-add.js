@@ -5,7 +5,6 @@ if (!customElements.get('quick-add-modal')) {
       constructor() {
         super();
         this.modalContent = this.querySelector('[id^="QuickAddInfo-"]');
-
         this.addEventListener('product-info:loaded', ({ target }) => {
           target.addPreProcessCallback(this.preprocessHTML.bind(this));
         });

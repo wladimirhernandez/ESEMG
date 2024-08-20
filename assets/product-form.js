@@ -17,8 +17,32 @@ if (!customElements.get('product-form')) {
         this.hideErrors = this.dataset.hideErrors === 'true';
       }
 
-      onSubmitHandler(evt) {
+      async clearCartIfNotEmpty() {
+        try {
+          const cartResponse = await fetch('/cart.js');
+          const cartData = await cartResponse.json();
+
+          if (cartData.items.length !== 0) {
+            const clearCartResponse = await fetch('/cart/clear.js', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
+            });
+            const clearCartData = await clearCartResponse.json();
+            console.log('Cart cleared:', clearCartData);
+          }
+        } catch (error) {
+          console.error('Error clearing cart:', error);
+        }
+      }
+
+      async onSubmitHandler(evt) {
         evt.preventDefault();
+
+        await this.clearCartIfNotEmpty();
+
         if (this.submitButton.getAttribute('aria-disabled') === 'true') return;
 
         this.handleErrorMessage();
